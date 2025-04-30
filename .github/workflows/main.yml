@@ -1,25 +1,40 @@
-name: Deploy to Staging
+name: Deploy Next.js to S3
 
 on:
   push:
-    branches: [main]
+    branches: ["main"]
+
+env:
+  BUCKET_NAME: staged-content-interactives
+  REGION: us-east-1
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Build project
-        run: npm install && npm run build  # or whatever your build step is
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      - name: Set repo name
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and Export
+        run: |
+          npm run build
+          npx next export
+
+      - name: Set REPO_NAME env
         run: echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
 
-      - name: Sync to S3 (path-specific)
-        run: aws s3 sync ./dist s3://staged-content-interactives.ck12.org/$REPO_NAME/ --delete
+      - name: Deploy to S3
+        run: aws s3 sync ./out s3://$BUCKET_NAME/$REPO_NAME/ --delete
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
+          AWS_REGION: ${{ env.REGION }}
