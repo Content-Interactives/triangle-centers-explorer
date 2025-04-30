@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 env:
-  BUCKET_NAME: staged-content-interactives
+  BUCKET_NAME: staged-content-interactives.ck12.org
   REGION: us-east-1
 
 jobs:
