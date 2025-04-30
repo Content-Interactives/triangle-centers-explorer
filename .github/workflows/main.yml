@@ -26,8 +26,7 @@ jobs:
 
       - name: Build and Export
         run: |
-          npm run build
-          npx next export
+          npx next build
 
       - name: Set REPO_NAME env
         run: echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
