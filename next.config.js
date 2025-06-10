@@ -1,14 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH,
+  basePath: process.env.NODE_ENV === 'production' ? '/triangle-centers-explorer' : '',
   images: {
     unoptimized: true
   },
+  trailingSlash: true,
   typescript: {
     ignoreBuildErrors: true
   },
-  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/triangle-centers-explorer/' : ''
 }
 
 module.exports = nextConfig 
